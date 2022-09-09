@@ -36,7 +36,7 @@ class MainFragment : Fragment(R.layout.fragment_blank) {
         mainViewModel.get10thChar().observe(viewLifecycleOwner) { responseBody ->
             responseBody?.let {
                 val getBody = it.string()
-                val body = getBody.split("<body>")[1].split("</body>")[0]
+                val body = getBodyUsingSplit(getBody)
 
                 binding.txt10Character.text = body[10].toString()
             }
@@ -47,7 +47,7 @@ class MainFragment : Fragment(R.layout.fragment_blank) {
         mainViewModel.getEvery10thCharacter().observe(viewLifecycleOwner) { responseBody ->
             responseBody?.let {
                 val getBody = it.string()
-                val body = getBody.split("<body>")[1].split("</body>")[0]
+                val body = getBodyUsingSplit(getBody)
 
                 for (i in 10 until body.length step 10) {
                     val char = body[i]
@@ -62,7 +62,7 @@ class MainFragment : Fragment(R.layout.fragment_blank) {
         mainViewModel.getWordCounter().observe(viewLifecycleOwner) { responseBody ->
             responseBody?.let {
                 val getBody = it.string()
-                val body = getBody.split("<body>")[1].split("</body>")[0]
+                val body = getBodyUsingSplit(getBody)
 
                 val words = body.split("\\s+".toRegex())
 
@@ -76,4 +76,7 @@ class MainFragment : Fragment(R.layout.fragment_blank) {
             }
         }
     }
+
+    private fun getBodyUsingSplit(getBody: String) =
+        getBody.split("<body>")[1].split("</body>")[0]
 }
