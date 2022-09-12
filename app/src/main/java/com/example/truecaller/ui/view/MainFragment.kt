@@ -1,12 +1,18 @@
 package com.example.truecaller.ui.view
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.example.truecaller.R
 import com.example.truecaller.databinding.FragmentBlankBinding
 import com.example.truecaller.ui.viewmodel.MainViewModel
+import com.example.truecaller.util.getBodyUsingSplit
+import com.example.truecaller.util.gone
+import com.example.truecaller.util.inVisible
+import com.example.truecaller.util.visible
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -23,7 +29,17 @@ class MainFragment : Fragment(R.layout.fragment_blank) {
     }
 
     private fun setupUI() {
-        binding.btnLoad.setOnClickListener { makeTheCalls() }
+        binding.btnLoad.setOnClickListener { showLoaderForASecond() }
+    }
+
+    private fun showLoaderForASecond() {
+        binding.progressBar.visible()
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            binding.progressBar.inVisible()
+
+            makeTheCalls()
+        }, 1000)
     }
 
     private fun makeTheCalls() {
@@ -52,7 +68,7 @@ class MainFragment : Fragment(R.layout.fragment_blank) {
                 for (i in 10 until body.length step 10) {
                     val char = body[i]
 
-                    binding.txtEvert10th.append("$i th char : $char \n")
+                    binding.txtEvery10th.append("$i th char : $char \n")
                 }
             }
         }
@@ -72,11 +88,8 @@ class MainFragment : Fragment(R.layout.fragment_blank) {
                         result[word]!! + 1 else result[word] = 1
                 }
 
-                binding.wordCounterText.text = result.entries.joinToString("\n")
+                binding.wordCounterText.text = "Word Counter : " + result.entries.joinToString("\n")
             }
         }
     }
-
-    private fun getBodyUsingSplit(getBody: String) =
-        getBody.split("<body>")[1].split("</body>")[0]
 }

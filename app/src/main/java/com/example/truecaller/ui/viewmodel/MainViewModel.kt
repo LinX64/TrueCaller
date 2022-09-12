@@ -16,7 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val mainRepository: MainRepository,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
     fun get10thChar() = liveData(ioDispatcher) {
