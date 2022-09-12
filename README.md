@@ -1,6 +1,6 @@
 ## Task - Three requests simultaneously - reading data from a URL (HTML)
 
-## Technology Used
+## Technologies
 
 - MVVM
 - LiveData
