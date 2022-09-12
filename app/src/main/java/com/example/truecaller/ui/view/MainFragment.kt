@@ -10,7 +10,6 @@ import com.example.truecaller.R
 import com.example.truecaller.databinding.FragmentBlankBinding
 import com.example.truecaller.ui.viewmodel.MainViewModel
 import com.example.truecaller.util.getBodyUsingSplit
-import com.example.truecaller.util.gone
 import com.example.truecaller.util.inVisible
 import com.example.truecaller.util.visible
 import dagger.hilt.android.AndroidEntryPoint
