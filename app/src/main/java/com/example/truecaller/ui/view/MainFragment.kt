@@ -13,6 +13,7 @@ import com.example.truecaller.util.getBodyUsingSplit
 import com.example.truecaller.util.inVisible
 import com.example.truecaller.util.visible
 import dagger.hilt.android.AndroidEntryPoint
+import okhttp3.ResponseBody
 
 @AndroidEntryPoint
 class MainFragment : Fragment(R.layout.fragment_blank) {
@@ -37,58 +38,67 @@ class MainFragment : Fragment(R.layout.fragment_blank) {
         Handler(Looper.getMainLooper()).postDelayed({
             binding.progressBar.inVisible()
 
-            makeTheCalls()
+            observeTheCalls()
         }, 1000)
     }
 
-    private fun makeTheCalls() {
+    private fun observeTheCalls() {
         get10thChar()
         getEvery10thChar()
         getWordCounter()
     }
 
     private fun get10thChar() {
-        mainViewModel.get10thChar().observe(viewLifecycleOwner) { responseBody ->
-            responseBody?.let {
-                val getBody = it.string()
-                val body = getBodyUsingSplit(getBody)
+        mainViewModel.get10thChar()
+            .observe(viewLifecycleOwner) { responseBody -> get10thCharImpl(responseBody) }
+    }
 
-                binding.txt10Character.text = body[10].toString()
-            }
+    private fun get10thCharImpl(responseBody: ResponseBody?) {
+        responseBody?.let {
+            val getBody = it.string()
+            val body = getBodyUsingSplit(getBody)
+
+            binding.txt10Character.text = body[10].toString()
         }
     }
 
     private fun getEvery10thChar() {
-        mainViewModel.getEvery10thCharacter().observe(viewLifecycleOwner) { responseBody ->
-            responseBody?.let {
-                val getBody = it.string()
-                val body = getBodyUsingSplit(getBody)
+        mainViewModel.getEvery10thCharacter()
+            .observe(viewLifecycleOwner) { responseBody -> getEvery10thCharImpl(responseBody) }
+    }
 
-                for (i in 10 until body.length step 10) {
-                    val char = body[i]
+    private fun getEvery10thCharImpl(responseBody: ResponseBody?) {
+        responseBody?.let {
+            val getBody = it.string()
+            val body = getBodyUsingSplit(getBody)
 
-                    binding.txtEvery10th.append("$i th char : $char \n")
-                }
+            for (i in 10 until body.length step 10) {
+                val char = body[i]
+
+                binding.txtEvery10th.append("$i th char : $char \n")
             }
         }
     }
 
     private fun getWordCounter() {
-        mainViewModel.getWordCounter().observe(viewLifecycleOwner) { responseBody ->
-            responseBody?.let {
-                val getBody = it.string()
-                val body = getBodyUsingSplit(getBody)
+        mainViewModel.getWordCounter()
+            .observe(viewLifecycleOwner) { responseBody -> wordCounterImpl(responseBody) }
+    }
 
-                val words = body.split("\\s+".toRegex())
+    private fun wordCounterImpl(responseBody: ResponseBody?) {
+        responseBody?.let {
+            val getBody = it.string()
+            val body = getBodyUsingSplit(getBody)
 
-                val result = mutableMapOf<String, Int>()
-                words.forEach { word ->
-                    if (result.containsKey(word)) result[word] =
-                        result[word]!! + 1 else result[word] = 1
-                }
+            val words = body.split("\\s+".toRegex())
 
-                binding.wordCounterText.text = "Word Counter : " + result.entries.joinToString("\n")
+            val result = mutableMapOf<String, Int>()
+            words.forEach { word ->
+                if (result.containsKey(word)) result[word] =
+                    result[word]!! + 1 else result[word] = 1
             }
+
+            binding.wordCounterText.text = "Word Counter : " + result.entries.joinToString("\n")
         }
     }
 }
