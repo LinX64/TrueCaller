@@ -1,19 +1,17 @@
 package com.example.truecaller.ui.view
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.example.truecaller.R
 import com.example.truecaller.databinding.FragmentBlankBinding
 import com.example.truecaller.ui.viewmodel.MainViewModel
-import com.example.truecaller.util.getBodyUsingSplit
+import com.example.truecaller.util.UiState
 import com.example.truecaller.util.inVisible
 import com.example.truecaller.util.visible
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
-import okhttp3.ResponseBody
 
 @AndroidEntryPoint
 class MainFragment : Fragment(R.layout.fragment_blank) {
@@ -29,76 +27,74 @@ class MainFragment : Fragment(R.layout.fragment_blank) {
     }
 
     private fun setupUI() {
-        binding.btnLoad.setOnClickListener { showLoaderForASecond() }
-    }
-
-    private fun showLoaderForASecond() {
-        binding.progressBar.visible()
-
-        Handler(Looper.getMainLooper()).postDelayed({
-            binding.progressBar.inVisible()
-
-            observeTheCalls()
-        }, 1000)
+        binding.btnLoad.setOnClickListener { observeTheCalls() }
     }
 
     private fun observeTheCalls() {
-        get10thChar()
-        getEvery10thChar()
-        getWordCounter()
+        observe10thChar()
+        observeEvery10thChar()
+        observeWordCounter()
     }
 
-    private fun get10thChar() {
+    private fun observe10thChar() {
         mainViewModel.get10thChar()
-            .observe(viewLifecycleOwner) { responseBody -> get10thCharImpl(responseBody) }
+            .observe(viewLifecycleOwner) { uiState ->
+
+                when (uiState) {
+                    is UiState.Loading -> binding.progressBar.visible()
+                    is UiState.Success -> {
+                        binding.progressBar.inVisible()
+                        binding.txt10Character.text = uiState.data.toString()
+                    }
+                    is UiState.Error -> {
+                        binding.progressBar.inVisible()
+                        showErrorDialog(uiState.message)
+                    }
+                }
+            }
     }
 
-    private fun get10thCharImpl(responseBody: ResponseBody?) {
-        responseBody?.let {
-            val getBody = it.string()
-            val body = getBodyUsingSplit(getBody)
-
-            binding.txt10Character.text = body[10].toString()
-        }
-    }
-
-    private fun getEvery10thChar() {
+    private fun observeEvery10thChar() {
         mainViewModel.getEvery10thCharacter()
-            .observe(viewLifecycleOwner) { responseBody -> getEvery10thCharImpl(responseBody) }
-    }
+            .observe(viewLifecycleOwner) { uiState ->
+                when (uiState) {
+                    is UiState.Loading -> binding.progressBar.visible()
 
-    private fun getEvery10thCharImpl(responseBody: ResponseBody?) {
-        responseBody?.let {
-            val getBody = it.string()
-            val body = getBodyUsingSplit(getBody)
-
-            for (i in 10 until body.length step 10) {
-                val char = body[i]
-
-                binding.txtEvery10th.append("$i th char : $char \n")
+                    is UiState.Success -> {
+                        binding.progressBar.inVisible()
+                        binding.txtEvery10th.text = uiState.data
+                    }
+                    is UiState.Error -> {
+                        binding.progressBar.inVisible()
+                        showErrorDialog(uiState.message)
+                    }
+                }
             }
-        }
     }
 
-    private fun getWordCounter() {
+    private fun observeWordCounter() {
         mainViewModel.getWordCounter()
-            .observe(viewLifecycleOwner) { responseBody -> wordCounterImpl(responseBody) }
+            .observe(viewLifecycleOwner) { uiState ->
+
+                when (uiState) {
+                    is UiState.Loading -> binding.progressBar.visible()
+                    is UiState.Success -> {
+                        binding.progressBar.inVisible()
+                        binding.wordCounterText.text = uiState.data
+                    }
+                    is UiState.Error -> {
+                        binding.progressBar.inVisible()
+                        showErrorDialog(uiState.message)
+                    }
+                }
+            }
     }
 
-    private fun wordCounterImpl(responseBody: ResponseBody?) {
-        responseBody?.let {
-            val getBody = it.string()
-            val body = getBodyUsingSplit(getBody)
-
-            val words = body.split("\\s+".toRegex())
-
-            val result = mutableMapOf<String, Int>()
-            words.forEach { word ->
-                if (result.containsKey(word)) result[word] =
-                    result[word]!! + 1 else result[word] = 1
-            }
-
-            binding.wordCounterText.text = "Word Counter : " + result.entries.joinToString("\n")
-        }
+    private fun showErrorDialog(message: String) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Error")
+            .setMessage(message)
+            .setPositiveButton("Ok") { dialog, _ -> dialog.dismiss() }
+            .show()
     }
 }

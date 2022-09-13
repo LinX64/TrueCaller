@@ -7,11 +7,5 @@ import retrofit2.http.GET
 interface ApiService {
 
     @GET(Constants.mEndPoint)
-    suspend fun getTrueCaller10thCharacterRequest(): ResponseBody
-
-    @GET(Constants.mEndPoint)
-    suspend fun getTrueCallerEvery10thCharacterRequest(): ResponseBody
-
-    @GET(Constants.mEndPoint)
-    suspend fun getTrueCallerWordCounterRequest(): ResponseBody
+    suspend fun getTrueCallerData(): ResponseBody
 }

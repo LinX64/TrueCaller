@@ -6,9 +6,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.truecaller.data.repository.MainRepository
 import com.example.truecaller.di.IoDispatcher
 import com.example.truecaller.util.Resource
+import com.example.truecaller.util.Status
+import com.example.truecaller.util.UiState
+import com.example.truecaller.util.getBodyUsingSplit
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import okhttp3.ResponseBody
 import javax.inject.Inject
@@ -20,35 +22,68 @@ class MainViewModel @Inject constructor(
 ) : ViewModel() {
 
     fun get10thChar() = liveData(ioDispatcher) {
-        val deferredOne = getTrueCaller10thCharacterRequest().data
-        emit(deferredOne)
+        val response = loadDataRequest()
+        when (response.status) {
+            Status.SUCCESS -> {
+                val body = response.data?.string()?.let { getBodyUsingSplit(it) }
+                val m10thChar = body?.get(10)
+                emit(UiState.Success(m10thChar))
+            }
+            Status.ERROR -> emit(UiState.Error(response.message ?: "Error Occurred!"))
+
+            else -> emit(UiState.Loading)
+        }
     }
 
     fun getEvery10thCharacter() = liveData(ioDispatcher) {
-        val deferredTwo = getTrueCallerEvery10thCharacterRequest().data
-        emit(deferredTwo)
+        val response = loadDataRequest()
+        when (response.status) {
+            Status.SUCCESS -> {
+                response.data?.string()?.let {
+                    val body = getBodyUsingSplit(it)
+
+                    val result = StringBuilder()
+                    for (i in 10 until body.length step 10) {
+                        result.append("$i th char : ${body[i]} \n")
+                    }
+
+                    emit(UiState.Success(result))
+                }
+
+            }
+            Status.ERROR -> emit(UiState.Error(response.message ?: "Error Occurred!"))
+
+            else -> emit(UiState.Loading)
+        }
     }
 
     fun getWordCounter() = liveData(ioDispatcher) {
-        val deferredThree = getTrueCallerWordCounterRequest().data
-        emit(deferredThree)
+        val response = loadDataRequest()
+
+        when (response.status) {
+            Status.SUCCESS -> {
+                response.data?.string()?.let {
+                    val body = getBodyUsingSplit(it)
+                    val words = body.split("\\s+".toRegex())
+
+                    val result = mutableMapOf<String, Int>()
+                    words.forEach { word ->
+                        if (result.containsKey(word)) result[word] =
+                            result[word]!! + 1 else result[word] = 1
+                    }
+
+                    emit(UiState.Success(result.entries.joinToString("\n")))
+                }
+
+            }
+            Status.ERROR -> emit(UiState.Error(response.message ?: "Error Occurred!"))
+
+            else -> emit(UiState.Loading)
+        }
     }
 
-    /*
-     * These are the methods that will be called from the viewModel to get the data from the repository.
-     */
-    private suspend fun getTrueCaller10thCharacterRequest(): Resource<ResponseBody> =
+    private suspend fun loadDataRequest(): Resource<ResponseBody> =
         viewModelScope.async {
-            return@async mainRepository.getTrueCaller10thCharacterRequest()
-        }.await()
-
-    private suspend fun getTrueCallerEvery10thCharacterRequest(): Resource<ResponseBody> =
-        viewModelScope.async {
-            return@async mainRepository.getTrueCallerEvery10thCharacterRequest()
-        }.await()
-
-    private suspend fun getTrueCallerWordCounterRequest(): Resource<ResponseBody> =
-        viewModelScope.async {
-            return@async mainRepository.getTrueCallerWordCounterRequest()
+            return@async mainRepository.getTrueCallerData()
         }.await()
 }

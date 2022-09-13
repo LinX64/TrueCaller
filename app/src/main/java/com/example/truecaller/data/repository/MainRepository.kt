@@ -11,27 +11,9 @@ class MainRepository @Inject constructor(
     private val responseHandler: ResponseHandler
 ) {
 
-    suspend fun getTrueCaller10thCharacterRequest(): Resource<ResponseBody> {
+    suspend fun getTrueCallerData(): Resource<ResponseBody> {
         return try {
-            val mResponseBody = apiService.getTrueCaller10thCharacterRequest()
-            responseHandler.handleSuccess(mResponseBody)
-        } catch (e: Exception) {
-            responseHandler.handleException(e)
-        }
-    }
-
-    suspend fun getTrueCallerEvery10thCharacterRequest(): Resource<ResponseBody> {
-        return try {
-            val mResponseBody = apiService.getTrueCallerEvery10thCharacterRequest()
-            responseHandler.handleSuccess(mResponseBody)
-        } catch (e: Exception) {
-            responseHandler.handleException(e)
-        }
-    }
-
-    suspend fun getTrueCallerWordCounterRequest(): Resource<ResponseBody> {
-        return try {
-            val mResponseBody = apiService.getTrueCallerWordCounterRequest()
+            val mResponseBody = apiService.getTrueCallerData()
             responseHandler.handleSuccess(mResponseBody)
         } catch (e: Exception) {
             responseHandler.handleException(e)
