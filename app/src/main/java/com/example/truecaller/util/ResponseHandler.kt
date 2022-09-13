@@ -2,7 +2,7 @@ package com.example.truecaller.util
 
 import retrofit2.HttpException
 
-open class ResponseHandler() {
+open class ResponseHandler {
     fun <T : Any> handleSuccess(data: T): Resource<T> {
         return Resource.success(data)
     }

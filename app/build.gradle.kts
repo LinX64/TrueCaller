@@ -1,3 +1,5 @@
+import AppDependencies.testImplementation
+
 plugins {
     id("com.android.application")
     id("dagger.hilt.android.plugin")
@@ -39,6 +41,10 @@ android {
 
     testOptions {
         animationsDisabled = true
+        unitTests {
+            isIncludeAndroidResources = true
+            isReturnDefaultValues = true
+        }
     }
 
     compileOptions {
@@ -57,6 +63,8 @@ dependencies {
     kapt(AppDependencies.kaptLibraries)
 
     androidTestImplementation(AppDependencies.androidTestImplementation)
-    testImplementation(AppDependencies.testImplementation)
+    testImplementation(testImplementation)
+    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6")
+
     debugImplementation(AppDependencies.debugImplementation)
 }

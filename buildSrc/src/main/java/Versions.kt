@@ -3,7 +3,7 @@ object Versions {
     const val kotlin = "1.6.21"
 
     //libs
-    const val coroutines = "1.6.1"
+    const val coroutines = "1.6.4"
     const val androidX = "1.4.1"
     const val activityKtx = "1.4.0"
     const val coreKtx = "1.7.0"
