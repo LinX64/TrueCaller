@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.truecaller.data.repository.MainRepository
 import com.example.truecaller.di.IoDispatcher
 import com.example.truecaller.util.Resource
-import com.example.truecaller.util.Status
+import com.example.truecaller.util.Status.*
 import com.example.truecaller.util.UiState
 import com.example.truecaller.util.getBodyUsingSplit
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,14 +22,16 @@ class MainViewModel @Inject constructor(
 ) : ViewModel() {
 
     fun get10thChar() = liveData(ioDispatcher) {
+        emit(UiState.Loading)
+
         val response = loadDataRequest()
         when (response.status) {
-            Status.SUCCESS -> {
+            SUCCESS -> {
                 val body = response.data?.string()?.let { getBodyUsingSplit(it) }
                 val m10thChar = body?.get(10)
                 emit(UiState.Success(m10thChar))
             }
-            Status.ERROR -> emit(UiState.Error(response.message ?: "Error Occurred!"))
+            ERROR -> emit(UiState.Error(response.message ?: "Error Occurred!"))
 
             else -> emit(UiState.Loading)
         }
@@ -38,7 +40,7 @@ class MainViewModel @Inject constructor(
     fun getEvery10thCharacter() = liveData(ioDispatcher) {
         val response = loadDataRequest()
         when (response.status) {
-            Status.SUCCESS -> {
+            SUCCESS -> {
                 response.data?.string()?.let {
                     val body = getBodyUsingSplit(it)
 
@@ -51,7 +53,7 @@ class MainViewModel @Inject constructor(
                 }
 
             }
-            Status.ERROR -> emit(UiState.Error(response.message ?: "Error Occurred!"))
+            ERROR -> emit(UiState.Error(response.message ?: "Error Occurred!"))
 
             else -> emit(UiState.Loading)
         }
@@ -61,7 +63,7 @@ class MainViewModel @Inject constructor(
         val response = loadDataRequest()
 
         when (response.status) {
-            Status.SUCCESS -> {
+            SUCCESS -> {
                 response.data?.string()?.let {
                     val body = getBodyUsingSplit(it)
                     val words = body.split("\\s+".toRegex())
@@ -76,7 +78,7 @@ class MainViewModel @Inject constructor(
                 }
 
             }
-            Status.ERROR -> emit(UiState.Error(response.message ?: "Error Occurred!"))
+            ERROR -> emit(UiState.Error(response.message ?: "Error Occurred!"))
 
             else -> emit(UiState.Loading)
         }
