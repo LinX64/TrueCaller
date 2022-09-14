@@ -27,6 +27,7 @@ object Versions {
     const val mockito = "4.7.0"
     const val junit = "4.13.2"
     const val kotlinJunit = "1.6.20"
+    const val coroutinesTest = "1.6"
     const val mockitoKotlin = "4.0.0"
     const val robolectric = "4.8.1"
     const val testCoreKtx = "1.4.0"

@@ -47,6 +47,8 @@ object AppDependencies {
      */
     private const val junit = "junit:junit:${Versions.junit}"
     private const val kotlinJunit = "org.jetbrains.kotlin:kotlin-test-junit:${Versions.kotlinJunit}"
+    private const val coroutinesTest =
+        "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.coroutinesTest}"
 
     private const val testCoreKTX = "androidx.test:core-ktx:${Versions.testCoreKtx}"
     private const val testExtJunitKTX = "androidx.test.ext:junit-ktx:${Versions.testExtJunit}"
@@ -122,6 +124,7 @@ object AppDependencies {
         add(mockitoKotlin)
         add(junit)
         add(kotlinJunit)
+        add(coroutinesTest)
         add(robolectric)
     }
     val debugImplementation = arrayListOf<String>().apply {

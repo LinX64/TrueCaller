@@ -1,3 +1,4 @@
+import AppDependencies.androidTestImplementation
 import AppDependencies.testImplementation
 
 plugins {
@@ -62,9 +63,7 @@ dependencies {
     implementation(AppDependencies.appLibraries)
     kapt(AppDependencies.kaptLibraries)
 
-    androidTestImplementation(AppDependencies.androidTestImplementation)
+    androidTestImplementation(androidTestImplementation)
     testImplementation(testImplementation)
-    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6")
-
     debugImplementation(AppDependencies.debugImplementation)
 }
