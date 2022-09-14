@@ -70,7 +70,7 @@ class MainViewModel @Inject constructor(
                     val body = getBodyUsingSplit(it)
                     val words = body.split("\\s+".toRegex())
 
-                    val result = mutableMapOf<String, Int>()
+                    val result = mutableMapOf<String, Int>().toSortedMap()
                     words.forEach { word ->
                         if (result.containsKey(word)) result[word] =
                             result[word]!! + 1 else result[word] = 1
