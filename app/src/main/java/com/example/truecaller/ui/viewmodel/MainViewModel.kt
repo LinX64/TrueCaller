@@ -6,11 +6,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.truecaller.data.repository.MainRepository
 import com.example.truecaller.di.IoDispatcher
 import com.example.truecaller.util.Resource
-import com.example.truecaller.util.Status.*
+import com.example.truecaller.util.Status.ERROR
+import com.example.truecaller.util.Status.SUCCESS
 import com.example.truecaller.util.UiState
 import com.example.truecaller.util.getBodyUsingSplit
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import okhttp3.ResponseBody
 import javax.inject.Inject
@@ -18,7 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val mainRepository: MainRepository,
-    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
 
     fun get10thChar() = liveData(ioDispatcher) {
