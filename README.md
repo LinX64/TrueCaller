@@ -8,6 +8,8 @@
 - Mockito
 - JUnit
 - Hilt-dagger
+- Enum class
+- Sealed Class
 
 # Preview
 
