@@ -1,4 +1,4 @@
-## Task - Three requests simultaneously - reading data from a URL (HTML)
+## Task - Making three requests simultaneously 
 
 ## Technologies
 
