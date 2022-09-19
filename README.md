@@ -1,6 +1,6 @@
 ## Task - Making three requests simultaneously 
 
-## Technologies
+## Teck stack and Technologies
 
 - MVVM
 - LiveData
