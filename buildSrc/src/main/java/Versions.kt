@@ -1,6 +1,6 @@
 object Versions {
-    const val gradle = "7.2.2"
-    const val kotlin = "1.6.21"
+    const val gradle = "7.3.0"
+    const val kotlin = "1.7.10"
 
     //libs
     const val coroutines = "1.6.4"
